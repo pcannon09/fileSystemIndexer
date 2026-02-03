@@ -82,7 +82,7 @@ namespace fsi
 
 		return error;
 	}
-	
+
 	IndexerError Indexer::addInfo(const IndexerInfo &info)
 	{
 		IndexerError error;

@@ -21,6 +21,8 @@ int main()
 		ciof::print(x);
 	}
 
+	indexer.findIndex("current-dir");
+
 	return 0;
 }
 
