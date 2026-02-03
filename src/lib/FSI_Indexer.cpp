@@ -83,6 +83,30 @@ namespace fsi
 		return error;
 	}
 
+	std::string Indexer::searchExactMatching(const std::string &find)
+	{
+		if (find.empty())
+			return "";
+
+		return this->findIndex(find).path;
+	}
+
+	std::vector<std::string> Indexer::searchMatching(const std::string &find)
+	{
+		if (find.empty())
+			return {};
+
+		std::vector<std::string> vec;
+
+		for (const auto &x : this->indexerInfo)
+		{
+			if (x.path.find(find) != std::string::npos)
+				vec.emplace_back(x.path);
+		}
+
+		return vec;
+	}
+
 	IndexerError Indexer::addInfo(const IndexerInfo &info)
 	{
 		IndexerError error;

@@ -87,6 +87,10 @@ namespace fsi
 
 		IndexerInfo findIndex(const std::string &toFind);
 
+		std::string searchExactMatching(const std::string &find);
+
+		std::vector<std::string> searchMatching(const std::string &path);
+
 		std::vector<IndexerInfo> getIndexerInfo() const;
 		std::vector<std::string> getIndexPaths() const;
 		std::string getID() const;
