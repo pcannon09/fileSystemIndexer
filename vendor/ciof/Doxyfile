@@ -6,7 +6,7 @@
 
 DOXYFILE_ENCODING      = UTF-8
 PROJECT_NAME           = "CIOF"
-PROJECT_NUMBER         = v1.0.0-build
+PROJECT_NUMBER         = v1.2.0-build
 PROJECT_BRIEF          = "Char Input Output Format - A simple Input and Output utility library "
 OUTPUT_DIRECTORY       = docs/
 CREATE_SUBDIRS         = YES

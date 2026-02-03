@@ -20,10 +20,10 @@
 
 // Versioning
 #define CIOF_VERSION_MAJOR            1
-#define CIOF_VERSION_MINOR            1
+#define CIOF_VERSION_MINOR            2
 #define CIOF_VERSION_PATCH            0
 
-#define CIOF_VERSION_STD              20251013
+#define CIOF_VERSION_STD              20260203
 
 // Version states:
 // * dev
@@ -50,9 +50,6 @@
 #	define CIOF_OS_WIN32
 #   if !defined(WIN32_ANSI_SUPPORT)
 #       define WIN32_ANSI_SUPPORT       1
-#   endif
-#   if WIN32_ANSI_SUPPORT == 1
-#       warning "ANSI Support for Windows is supported from Windows 10 or newer"
 #   endif
 #elif defined(__APPLE__) || defined(__MACH__) || defined(Macintosh)
 #	define CIOF_OS_MACOS

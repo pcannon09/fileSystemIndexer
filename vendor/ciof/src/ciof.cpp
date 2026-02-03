@@ -18,6 +18,13 @@ namespace ciof
 	void print()
 	{ std::cout << std::endl; }
 
+	void input()
+	{
+		std::string empty;
+
+		ciof::input(&empty);
+	}
+
 	std::string getCursorPos(int _row, int _col)
 	{ return std::string("\033[" + std::to_string(_row) + ";" + std::to_string(_col) + "H"); }
 
@@ -54,6 +61,15 @@ namespace ciof
 		}
 	}
 
+	void clear()
+	{ ciof::echo("\033[2J\033[H"); }
+
+	void showCursor(const bool &show)
+	{
+		if (show) ciof::echo("\033[?25h");
+		else ciof::echo("\033[?25l");
+	}
+
 	std::string styleReset()
 	{ return "\033[0m"; }
 
@@ -63,6 +79,13 @@ namespace ciof
 	std::string rgbSet(unsigned int r, unsigned int g, unsigned int b)
 	{
 		return "\033[38;2;" + std::to_string(r) + ";"
+			+ std::to_string(g) + ";"
+			+ std::to_string(b) + "m";
+	}
+
+	std::string rgbBgSet(unsigned int r, unsigned int g, unsigned int b)
+	{
+		return "\033[48;2;" + std::to_string(r) + ";"
 			+ std::to_string(g) + ";"
 			+ std::to_string(b) + "m";
 	}

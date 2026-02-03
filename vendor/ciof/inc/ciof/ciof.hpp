@@ -230,6 +230,11 @@ namespace ciof
 	template <typename T>
 	void input(T *_var);
 
+	/**
+	 * @brief Empty input() function; Do not save any input to a variable, just leave it as a blank input
+	 */
+	void input();
+
 	// NOTE: UTILS
 	/**
 	 * @brief Get everything as a string format
@@ -270,6 +275,15 @@ namespace ciof
 	std::string rgbSet(unsigned int r, unsigned int g, unsigned int b);
 
 	/**
+	 * @brief Set the RGB color for background in the terminal
+	 * @param r Red color
+	 * @param g Green color
+	 * @param b Blue color
+	 * @return std::string Color escape sequence for RGB colors
+	 */
+	std::string rgbBgSet(unsigned int r, unsigned int g, unsigned int b);
+
+	/**
 	 * @brief Initialize ANSI text option in Windows 10 or later
 	 * NOTE: ONLY WORKS IN WINDOWS 10 OR LATER
 	 */
@@ -290,6 +304,18 @@ namespace ciof
 	 * @param _col Column to set (Y)
 	 */
 	void cursorPos(int _row, int _col);
+
+	/**
+	 * @brief Clear the contents of the terminal
+	 * NOTE: In Windows; enable ANSI by doing `ciof::initANSI()`
+	 */
+	void clear();
+
+	/**
+	 * @brief Show or hide the cursor from the terminal
+	 * NOTE: In Windows; enable ANSI by doing `ciof::initANSI()`
+	 */
+	void showCursor(const bool &show);
 }
 
 #include "ciof.ipp"

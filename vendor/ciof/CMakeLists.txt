@@ -101,7 +101,6 @@ set(HEADERS
 )
 
 set(SOURCE_NON_INSTALL ${TESTS_DIR}/main.cpp)
-set(SOURCE_INSTALLED ${TESTS_DIR}/releaseMain.cpp)
 set(SOURCE_NON_INSTALL_VER_CHECK ${TESTS_DIR}/version.cpp)
 
 set(SOURCES
@@ -113,7 +112,6 @@ add_library(${projectName}_static STATIC ${SOURCES} ${HEADERS})
 add_library(${projectName}_shared SHARED ${SOURCES} ${HEADERS})
 
 add_executable(${projectName}_non_install ${SOURCE_NON_INSTALL})
-add_executable(${projectName}_installed ${SOURCE_INSTALLED})
 add_executable(${projectName}_version_check ${SOURCE_NON_INSTALL_VER_CHECK})
 
 function(configure_target tgt)
@@ -124,13 +122,11 @@ function(configure_target tgt)
 endfunction()
 
 configure_target(${projectName}_non_install)
-configure_target(${projectName}_installed)
 configure_target(${projectName}_version_check)
 
 # Output directory
 set_target_properties(
     ${projectName}_non_install
-    ${projectName}_installed
     ${projectName}_version_check
     PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin
