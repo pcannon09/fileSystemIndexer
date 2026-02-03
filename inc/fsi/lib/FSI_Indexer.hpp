@@ -25,6 +25,29 @@ namespace fsi
 		SymLink
 	};
 
+	typedef struct IndexerDateTime
+	{
+		unsigned int hour;
+		unsigned int min;
+		unsigned int sec;
+		unsigned int ms;
+
+		unsigned int year;
+		unsigned int month;
+		unsigned int day;
+	} IndexerDateTime;
+
+	typedef struct IndexerFoundInfo
+	{
+		std::string path; // /home/user/projects, ...
+		std::string name; // main, ...
+		std::string extension; // .txt, .png, .cpp, ...
+		std::string extType; // Audio, Image, Text, Code, Other, ...
+
+		IndexerDateTime createdDT;
+		IndexerDateTime lastModDT;
+	} IndexerFoundInfo;
+
 	typedef struct IndexerInfo
 	{
 		std::string id; // Optional

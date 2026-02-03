@@ -98,7 +98,7 @@ set(INC_DIR "${CMAKE_SOURCE_DIR}/inc/${projectName}")
 
 # Source Files
 set(HEADERS
-    ${INC_DIR}/FSIpredefines.hpp
+    ${INC_DIR}/FSIpredefines.h
 
 	${INC_DIR}/core/FSI_dirUtils.h
 
