@@ -16,7 +16,7 @@ int main()
 		indexer.addExtendedInfo(info);
 	}
 
-	for (const auto &x : indexer.getIndexPaths())
+	for (const auto &x : indexer.searchMatching("txt"))
 	{
 		ciof::print(x);
 	}
