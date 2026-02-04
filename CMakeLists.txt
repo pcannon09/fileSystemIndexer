@@ -101,6 +101,7 @@ set(HEADERS
     ${INC_DIR}/FSIpredefines.h
 
 	${INC_DIR}/core/FSI_dirUtils.h
+	${INC_DIR}/core/FSI_timeUtils.hpp
 
 	${INC_DIR}/core/interfaces/FSI_dirUtils_posix.h
 	${INC_DIR}/core/interfaces/FSI_dirUtils_windows.h
@@ -112,6 +113,7 @@ set(SOURCES
 	${SRC_DIR}/lib/FSI_Indexer.cpp
 
 	${SRC_DIR}/core/FSI_dirUtils.c
+	${SRC_DIR}/core/FSI_timeUtils.cpp
 
 	${SRC_DIR}/core/interfaces/FSI_dirUtils_posix.c
 	${SRC_DIR}/core/interfaces/FSI_dirUtils_windows.c
