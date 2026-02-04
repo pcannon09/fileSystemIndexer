@@ -4,6 +4,8 @@
 #include <string>
 #include <vector>
 
+#include "../core/FSI_timeUtils.hpp"
+
 #define __FSI_SUCCESS 		0
 #define __FSI_INDEXERERR_CHECK(e) \
 	(e.raise || e.fatal) && e.code != __FSI_SUCCESS
@@ -25,18 +27,6 @@ namespace fsi
 		SymLink
 	};
 
-	typedef struct IndexerDateTime
-	{
-		unsigned int hour;
-		unsigned int min;
-		unsigned int sec;
-		unsigned int ms;
-
-		unsigned int year;
-		unsigned int month;
-		unsigned int day;
-	} IndexerDateTime;
-
 	typedef struct IndexerFoundInfo
 	{
 		std::string path; // /home/user/projects, ...
@@ -44,8 +34,8 @@ namespace fsi
 		std::string extension; // .txt, .png, .cpp, ...
 		std::string extType; // Audio, Image, Text, Code, Other, ...
 
-		IndexerDateTime createdDT;
-		IndexerDateTime lastModDT;
+		utils::TimeUtils_DateTime createdDT;
+		utils::TimeUtils_DateTime lastModDT;
 	} IndexerFoundInfo;
 
 	typedef struct IndexerInfo
@@ -86,6 +76,8 @@ namespace fsi
 		IndexerError removeInfo(const std::string &searcher);
 
 		IndexerInfo findIndex(const std::string &toFind);
+
+		utils::TimeUtils_DateTime getFileDTInfo(const std::string &path);
 
 		std::string searchExactMatching(const std::string &find);
 

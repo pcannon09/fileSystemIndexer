@@ -2,6 +2,8 @@
 #include <algorithm>
 
 #include "../../inc/fsi/lib/FSI_Indexer.hpp"
+#include "../../inc/fsi/core/FSI_timeUtils.hpp"
+
 #include "../../inc/fsi/core/FSI_dirUtils.h"
 
 #include "ciof/ciof.hpp"
@@ -182,6 +184,13 @@ namespace fsi
 		);
 
 		return error;
+	}
+
+	utils::TimeUtils_DateTime Indexer::getFileDTInfo(const std::string &path)
+	{
+		const fs::file_time_type &lastWriteTime = fs::last_write_time(path);
+
+		return utils::fsClockDataToDT(lastWriteTime);
 	}
 
 	std::vector<IndexerInfo> Indexer::getIndexerInfo() const
