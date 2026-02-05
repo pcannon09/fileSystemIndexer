@@ -1,5 +1,7 @@
 #define _DEFAULT_SOURCE
 
+#include "../../../inc/fsi/FSIpredefines.h"
+
 #include "../../../inc/fsi/core/interfaces/FSI_dirUtils_posix.h"
 
 #include <dirent.h>

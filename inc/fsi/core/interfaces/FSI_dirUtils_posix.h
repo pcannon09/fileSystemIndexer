@@ -11,8 +11,6 @@
 
 __FSI_DIRUTILS_POSIX_CPP_OPEN
 
-#include "../../FSIpredefines.h"
-
 #include "../FSI_dirUtils.h"
 
 #include "cstr/cstr.h"
