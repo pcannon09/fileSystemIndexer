@@ -45,6 +45,13 @@ Do not use dev mode here, just compile as prod; No information about crashes, no
 ./compile.sh
 ```
 
+### Run the Tests
+There is a basic bash script with some utilities that you can execute the executable directly
+
+```bash
+./run.sh
+```
+
 ## Basic usage
 In this example you can directly add a specific directory without its parents
 ```cpp
