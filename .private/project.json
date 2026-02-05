@@ -2,8 +2,8 @@
 	"exeName": "fsi",
 	"name": "File System Indexer",
 
-	"version": "0.0.1",
-	"versionState": "dev",
+	"version": "0.1.0",
+	"versionState": "beta",
 	"versionSTD": 0
 }
 
