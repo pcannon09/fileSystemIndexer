@@ -6,6 +6,8 @@
 
 #include "../../inc/fsi/core/FSI_dirUtils.h"
 
+#include "../../inc/fsi/FSIpredefines.h"
+
 #include "ciof/ciof.hpp"
 
 namespace fs = std::filesystem;
@@ -17,7 +19,8 @@ namespace fsi
 	{
 		if (fs::is_directory(path)) return IndexerPathType::Directory;
 		else if (fs::is_symlink(path)) return IndexerPathType::SymLink;
-		else return IndexerPathType::File;
+
+		return IndexerPathType::File;
 	}
 
 	std::vector<std::string> Indexer::__iteratePath(const std::string &path)
