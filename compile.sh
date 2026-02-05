@@ -14,8 +14,8 @@ if ! command -v cmake > /dev/null 2>&1; then
 	exit
 fi
 
-if ! command -v ninja > /dev/null 2>&1; then
-	echo -e "$BRIGHT_RED Please have 'ninja' installed $RESET"
+if ! command -v ninja > /dev/null 2>&1 || ! command -v make > /dev/null 2>&1; then
+	echo -e "$BRIGHT_RED Please have 'ninja' or 'make' installed $RESET"
 	exit
 fi
 
@@ -30,6 +30,7 @@ PROJECT_INFO_PATH=".private/project.json"
 cores=$(jq '.cores' "$COMPILATION_FILE_PATH")
 enableBackup=$(jq -r '.enableBackup' "$COMPILATION_FILE_PATH")
 projectName=$(jq -r '.exeName' "$PROJECT_INFO_PATH")
+
 readarray -t compileMacros < <(jq -r '.macros // [] | .[]' "$COMPILATION_FILE_PATH")
 
 if [ ! -d "./build" ]; then
