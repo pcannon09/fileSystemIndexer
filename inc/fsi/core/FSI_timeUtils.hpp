@@ -25,6 +25,11 @@ namespace fsi::utils
 		unsigned int day;
 	} TimeUtils_DateTime;
 
+	/**
+	 * @brief Set std::filesystem clock data to an actual usable Date and Time format
+	 * @param time Get `std::filesystem::file_time_type` that is to be converted to a usuable time format
+	 * @return Date-Time object to be used
+	 */
 	TimeUtils_DateTime fsClockDataToDT(const fs::file_time_type &time);
 }
 

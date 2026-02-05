@@ -30,7 +30,20 @@ __FSI_DIRUTILS_TC_CPP_OPEN
 #define __FSI_TC_CEL_FROM_RE(value)   ((value) * 5.0 / 4.0)
 #define __FSI_TC_CEL_FROM_RA(value)   (((value) - 491.67) * 5.0 / 9.0)
 
+/**
+ * @brief Convert Celcius to `from` as a double
+ * @param from Convert to from celcius
+ * @param to The value of the temperature
+ * @return The exact converted temperature
+ */
 double FSI_temperatureConvertCelTo(const char *from, const double to);
+
+/**
+ * @brief Convert from `from` to Celcius as a double
+ * @param from The value of the temperature
+ * @param to From celcius to the temperature
+ * @return The exact converted temperature
+ */
 double FSI_temperatureConvertCelFrom(const char *to, const double from);
 
 __FSI_DIRUTILS_TC_CPP_CLOSE

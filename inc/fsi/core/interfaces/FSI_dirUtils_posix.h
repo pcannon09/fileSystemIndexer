@@ -21,9 +21,26 @@ typedef struct FSI_DirData_POSIX
 	CSTR path;
 } FSI_DirData_POSIX;
 
+/**
+ * @brief Open directory as read only
+ * @param d Directory data
+ * @param path Path to open dir
+ * @return Status (1 if worked, 0 if failed)
+ */
 int fsi_openDir(FSI_DirData *d, const char *path);
+
+/**
+ * @brief Read directory from reading the `FSI_DirData` information
+ * @param d Directory data
+ * @param out Entry data to set the information
+ * @return Status (1 if worked, 0 if failed)
+ */
 int fsi_readDir(FSI_DirData *d, FSI_EntryData *out);
 
+/**
+ * @brief Get the directory data to deallocate memory
+ * @param d Object to deallocate
+ */
 void fsi_closeDir(FSI_DirData *d);
 
 __FSI_DIRUTILS_POSIX_CPP_CLOSE

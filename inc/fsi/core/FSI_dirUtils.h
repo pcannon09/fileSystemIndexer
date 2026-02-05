@@ -39,6 +39,11 @@ typedef struct FSI_EntryData
 #define FSI_FREE(x) free(x); x = NULL;
 #define FSI_DEL(x) delete x; x = nullptr;
 
+/**
+ * @brief Walk to every directory and file and set `vec` to a CVEC value
+ * @param vec The vector to set data to
+ * @param path Path to walk to all its sub-dirs
+ */
 void fsi_walk(CVEC *vec, const char *path);
 
 __FSI_DIRUTILS_CPP_CLOSE
