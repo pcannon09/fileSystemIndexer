@@ -14,7 +14,7 @@ option(DEV_MODE "Enable development mode" ON)
 set(BUILD_MODE "Development" CACHE STRING "Build mode")
 
 if(NOT DEV_MODE)
-    set(DEV_MODE ON)
+    set(DEV_MODE 1)
     set(BUILD_MODE "Development")
 endif()
 
@@ -47,27 +47,30 @@ set(DEV_COMPILE_FLAGS
     -Wunused
     -Wall
     -Wno-range-loop-analysis
-    -DFSI_DEV=true
 )
 
 set(DEV_LINK_FLAGS
     -fsanitize=address,leak
     -g
+    -DFSI_DEV=true
 )
 
 # Production mode flags
 set(PROD_COMPILE_FLAGS
     -O3
+    -g
+)
+
+set(PROD_LINK_FLAGS
+    -g
+    -O3
     -DNDEBUG
     -DFSI_DEV=false
 )
 
-set(PROD_LINK_FLAGS
-    -O3
-)
-
 # Apply flags based on mode
 if(DEV_MODE)
+    message(WARNING "Compiling with DEV_MODE")
     set(PROGRAM_COMPILE_FLAGS ${DEV_COMPILE_FLAGS})
     set(PROGRAM_LINK_FLAGS ${DEV_LINK_FLAGS})
 else()

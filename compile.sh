@@ -30,6 +30,11 @@ PROJECT_INFO_PATH=".private/project.json"
 cores=$(jq '.cores' "$COMPILATION_FILE_PATH")
 enableBackup=$(jq -r '.enableBackup' "$COMPILATION_FILE_PATH")
 projectName=$(jq -r '.exeName' "$PROJECT_INFO_PATH")
+DEV_MODE=ON
+
+if [ "$2" == "ndev" ]; then
+	DEV_MODE=OFF
+fi
 
 readarray -t compileMacros < <(jq -r '.macros // [] | .[]' "$COMPILATION_FILE_PATH")
 
@@ -37,7 +42,7 @@ if [ ! -d "./build" ]; then
 	mkdir build
 fi
 
-function ninjaComp() {
+function __compileSoftware() {
 	cmake --build build -j"$cores" -v
 }
 
@@ -70,18 +75,13 @@ if [ "$1" == "setup" ]; then
 		fi
 	done
 
-	cmakeCommand="cmake -S . -B build -G Ninja -DCMAKE_POLICY_VERSION_MINIMUM=3.5 -DCMAKE_CXX_FLAGS=\"$compilerFlags\""
+	cmakeCommand="cmake -S . -B build -G Ninja -DCMAKE_POLICY_VERSION_MINIMUM=3.5 -DDEV_MODE=$DEV_MODE -DCMAKE_CXX_FLAGS=\"$compilerFlags\""
 
 	echo -e "${BRIGHT_BLUE}${BOLD}[ * ] Running CMake:\n$cmakeCommand${RESET}"
 	eval "$cmakeCommand"
 
 elif [ -z "$1" ] || [ "$1" == "m" ]; then
-	if command -v ninja > /dev/null 2>&1; then
-		ninjaComp "$@"
-		exit
-	else
-		echo -e "$BRIGHT_RED Please have 'ninja' installed $RESET"
-	fi
+	__compileSoftware "$@"
 
 elif [ "$1" == "settings" ]; then
 	echo -e "[ * ] Compilation settings"
