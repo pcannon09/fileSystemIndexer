@@ -16,22 +16,22 @@ __FSI_DIRUTILS_TC_CPP_OPEN
 
 #include <stdbool.h>
 
-#define __FSI_TC_CEL_TO_C(value) 		value
-#define __FSI_TC_CEL_TO_F(value) 		(value - 32) * 5 / 9
-#define __FSI_TC_CEL_TO_K(value) 		value - 273.15
-#define __FSI_TC_CEL_TO_RE(value) 		value * 5 / 4
-#define __FSI_TC_CEL_TO_RA(value) 		(value - 491.67) * 5 / 9
+// Celcius to others
+#define __FSI_TC_CEL_TO_C(value)      (value)
+#define __FSI_TC_CEL_TO_F(value)      ((value) * 9.0 / 5.0 + 32.0)
+#define __FSI_TC_CEL_TO_K(value)      ((value) + 273.15)
+#define __FSI_TC_CEL_TO_RE(value)     ((value) * 4.0 / 5.0)
+#define __FSI_TC_CEL_TO_RA(value)     (((value) + 273.15) * 9.0 / 5.0)
 
-#define __FSI_TC_CEL_FROM_C(value) 			value
-#define __FSI_TC_CEL_FROM_F(value) 			(value * 9 / 2) + 32
-#define __FSI_TC_CEL_FROM_K(value) 			value + 273.15
-#define __FSI_TC_CEL_FROM_RE(value) 		value * 4 / 5
-#define __FSI_TC_CEL_FROM_RA(value) 		(value - 273.15) * 9 / 5
+// Others to Celcius
+#define __FSI_TC_CEL_FROM_C(value)    (value)
+#define __FSI_TC_CEL_FROM_F(value)    (((value) - 32.0) * 5.0 / 9.0)
+#define __FSI_TC_CEL_FROM_K(value)    ((value) - 273.15)
+#define __FSI_TC_CEL_FROM_RE(value)   ((value) * 5.0 / 4.0)
+#define __FSI_TC_CEL_FROM_RA(value)   (((value) - 491.67) * 5.0 / 9.0)
 
-double FSI_temperatureConvertCelTo(
-		const char *from,
-		const double to
-		);
+double FSI_temperatureConvertCelTo(const char *from, const double to);
+double FSI_temperatureConvertCelFrom(const char *to, const double from);
 
 __FSI_DIRUTILS_TC_CPP_CLOSE
 
