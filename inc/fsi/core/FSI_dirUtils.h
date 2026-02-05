@@ -36,9 +36,6 @@ typedef struct FSI_EntryData
 	FSI_Type type;
 } FSI_EntryData;
 
-#define FSI_FREE(x) free(x); x = NULL;
-#define FSI_DEL(x) delete x; x = nullptr;
-
 /**
  * @brief Walk to every directory and file and set `vec` to a CVEC value
  * @param vec The vector to set data to
