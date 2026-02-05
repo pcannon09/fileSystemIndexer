@@ -13,19 +13,6 @@ namespace fs = std::filesystem;
 namespace fsi
 {
 	// PROTECTED //
-	IndexerError Indexer::__fileAdd(const std::string &searcher, IndexerInfo info)
-	{
-		IndexerError error = this->removeInfo(searcher);
-
-		if (__FSI_INDEXERERR_CHECK(error))
-			return error;
-
-		if (info.pathType == IndexerPathType::SymLink)
-			info.path = fs::read_symlink(info.path);
-
-		return this->addInfo(info);
-	}
-
 	IndexerPathType Indexer::__getPathType(const std::string &path) const
 	{
 		if (fs::is_directory(path)) return IndexerPathType::Directory;
@@ -60,8 +47,13 @@ namespace fsi
 
 
 	// PUBLIC //
+	// CONSTRUCTOR
 	Indexer::Indexer(const std::string &id)
 		: id(id)
+	{ }
+
+	// DECONSTRUCTOR
+	Indexer::~Indexer()
 	{ }
 
 	IndexerError Indexer::addExtendedInfo(const IndexerInfo &info)
