@@ -14,8 +14,36 @@ To compile this program, you will need the following dependencies
 1. C11+ / C++17+ compiler
 2. jq
 3. Bash
-4. Ninja / Make
+4. Ninja / Make (Ninja is prefered)
 5. CMake
+
+## How to Compile
+### Setting up
+
+The developer can compile the code with the following snippet
+```bash
+./gen.sh # Generate all the required files and docs
+./compile.sh settings # Developer will be prompted for config; If doxygen is not installed, it will still work
+```
+
+### Developer Mode
+With developer mode, you can get more information about unexpected crashes, have ASAN / LSAN support, debug support, ...
+
+```bash
+./compile.sh setup
+```
+
+### Production Mode
+Do not use dev mode here, just compile as prod; No information about crashes, no debug or ASAN / LSAN support
+
+```bash
+./compile.sh setup ndev
+```
+
+### Compile the sources
+```bash
+./compile.sh
+```
 
 ## Basic usage
 In this example you can directly add a specific directory without its parents
