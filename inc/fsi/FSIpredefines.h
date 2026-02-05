@@ -7,6 +7,16 @@
 #ifndef INCLUDE_FSI_FSIPREDEFINES_HPP_
 #define INCLUDE_FSI_FSIPREDEFINES_HPP_
 
+#ifdef __cplusplus
+# 	define __FSI_DIRUTILS_PREDEF_CPP_OPEN 		extern "C" {
+# 	define __FSI_DIRUTILS_PREDEF_CPP_CLOSE 		}
+#else
+# 	define __FSI_DIRUTILS_PREDEF_CPP_OPEN
+# 	define __FSI_DIRUTILS_PREDEF_CPP_CLOSE
+#endif // __cplusplus
+
+__FSI_DIRUTILS_PREDEF_CPP_OPEN
+
 // Project setup
 #define FSI_DEFAULT_CPP_STD			201703L
 
@@ -32,6 +42,9 @@
 #define FSI_STRINGIFY(x) #x
 #define FSI_TOSTRING(x) FSI_STRINGIFY(x)
 
+#define FSI_FREE(x) free(x); x = NULL;
+#define FSI_DEL(x) delete x; x = nullptr;
+
 #ifndef FSI_DEV
 #   define FSI_DEV true
 #endif
@@ -47,6 +60,8 @@
 #else
 #	error "Current platform is not supported"
 #endif // defined(WIN32) // Platform check
+
+__FSI_DIRUTILS_PREDEF_CPP_CLOSE
 
 #endif  // INCLUDE_FSI_FSIPREDEFINES_HPP_
 
