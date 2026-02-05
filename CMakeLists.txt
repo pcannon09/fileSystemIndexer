@@ -98,30 +98,41 @@ set(INC_DIR "${CMAKE_SOURCE_DIR}/inc/${projectName}")
 
 # Source Files
 set(HEADERS
+	${INC_DIR}/core/FSI_timeUtils.hpp
+)
+
+set(HEADERS_C
     ${INC_DIR}/FSIpredefines.h
 
 	${INC_DIR}/core/FSI_dirUtils.h
-	${INC_DIR}/core/FSI_timeUtils.hpp
+
+	${INC_DIR}/modules/temperature/FSI_temperatureConverter.h
 
 	${INC_DIR}/core/interfaces/FSI_dirUtils_posix.h
 	${INC_DIR}/core/interfaces/FSI_dirUtils_windows.h
 )
 
-set(SOURCES
-	${SRC_DIR}/main.cpp
-
-	${SRC_DIR}/lib/FSI_Indexer.cpp
-
+set(SOURCES_C
 	${SRC_DIR}/core/FSI_dirUtils.c
-	${SRC_DIR}/core/FSI_timeUtils.cpp
+
+	${SRC_DIR}/modules/temperature/FSI_temperatureConverter.c
 
 	${SRC_DIR}/core/interfaces/FSI_dirUtils_posix.c
 	${SRC_DIR}/core/interfaces/FSI_dirUtils_windows.c
 )
 
+set(SOURCES
+	${SRC_DIR}/lib/FSI_Indexer.cpp
+
+	${SRC_DIR}/core/FSI_timeUtils.cpp
+)
+
 # Build Targets
 add_library(${projectName}_static STATIC ${SOURCES} ${HEADERS})
 add_library(${projectName}_shared SHARED ${SOURCES} ${HEADERS})
+
+add_library(${projectName}_c_static STATIC ${SOURCES_C} ${HEADERS_C})
+add_library(${projectName}_c_shared SHARED ${SOURCES_C} ${HEADERS_C})
 
 add_subdirectory(${VENDOR_DIR}/ciof ciof)
 add_subdirectory(${VENDOR_DIR}/cstr cstr)
@@ -131,7 +142,7 @@ include_directories(${VENDOR_DIR}/ciof/inc)
 include_directories(${VENDOR_DIR}/cstr/inc)
 include_directories(${VENDOR_DIR}/cvec/inc)
 
-add_executable(${projectName} ${SOURCES})
+add_executable(${projectName} ${SRC_DIR}/main.cpp ${SOURCES})
 
 function(configure_target tgt)
     target_compile_options(${tgt} PRIVATE ${PROGRAM_COMPILE_FLAGS})
@@ -139,6 +150,7 @@ function(configure_target tgt)
     target_include_directories(${tgt} PRIVATE ${INC_DIR})
     target_link_libraries(${tgt} PRIVATE
     	${projectName}_static
+    	${projectName}_c_static
 
     	ciof_static
     	cstr_static
