@@ -2,6 +2,8 @@
 
 #include "../inc/fsi/core/interfaces/FSI_dirUtils_posix.h"
 
+#include "../inc/fsi/modules/temperature/FSI_temperatureConverter.h"
+
 #include "ciof/ciof.hpp"
 
 namespace
@@ -17,6 +19,8 @@ namespace
 
 int main()
 {
+	ciof::print(FSI_temperatureConvertCelTo("k", 12));
+
 	fsi::Indexer indexer("main-indexer");
 
 	{
