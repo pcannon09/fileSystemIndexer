@@ -37,7 +37,7 @@ int main()
 		ciof::print("FILE NAME: %1 -- %2", x, __timeToStr(indexer.getFileDTInfo(x)));
 	}
 
-	indexer.findIndex("current-dir");
+	ciof::print("ID `current-dir` has path: %1", indexer.findIndex("current-dir").path);
 
 	return 0;
 }
