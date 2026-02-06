@@ -49,7 +49,7 @@ __FSI_DIRUTILS_PREDEF_CPP_OPEN
 #   define FSI_DEV true
 #endif
 
-#ifdef WIN32
+#if defined(WIN32) || defined(_WIN32)
 #	define FSI_OS_WIN32
 #elif defined(__APPLE__) || defined(__MACH__) || defined(Macintosh)
 #	define FSI_OS_MACOS
@@ -58,7 +58,7 @@ __FSI_DIRUTILS_PREDEF_CPP_OPEN
 #elif defined(__FreeBSD__)
 #	define FSI_OS_FREEBSD
 #else
-#	error "Current platform is not supported"
+#	warning "Current platform is not supported"
 #endif // defined(WIN32) // Platform check
 
 __FSI_DIRUTILS_PREDEF_CPP_CLOSE
