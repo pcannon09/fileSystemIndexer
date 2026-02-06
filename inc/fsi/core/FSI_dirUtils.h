@@ -11,7 +11,8 @@
 
 __FSI_DIRUTILS_CPP_OPEN
 
-#include <dirent.h>
+#include "../FSIpredefines.h"
+
 #include <string.h>
 
 #include "cvec/cvec.h"
