@@ -12,7 +12,7 @@ if [ "$1" == "" ]; then
 fi
 
 if [ -f "src/main.cpp" ]; then
-	$defaultEdit src/main.cpp $(find src/ inc/ -type f) CMakeLists.txt
+	$defaultEdit src/main.cpp $(find src/ inc/ -type f) CMakeLists.txt cmake/*
 
 	exit
 
