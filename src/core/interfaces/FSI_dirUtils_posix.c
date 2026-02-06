@@ -2,6 +2,8 @@
 
 #include "../../../inc/fsi/FSIpredefines.h"
 
+#ifndef FSI_OS_WIN32
+
 #include "../../../inc/fsi/core/interfaces/FSI_dirUtils_posix.h"
 
 #include <dirent.h>
@@ -80,4 +82,6 @@ void fsi_closeDir(FSI_DirData *d)
 
 	FSI_FREE(p);
 }
+
+#endif // FSI_OS_WIN32
 

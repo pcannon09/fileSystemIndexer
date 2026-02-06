@@ -11,9 +11,15 @@
 
 __FSI_DIRUTILS_POSIX_CPP_OPEN
 
+#include "../../FSIpredefines.h"
+
+#ifndef FSI_OS_WIN32
+
 #include "../FSI_dirUtils.h"
 
 #include "cstr/cstr.h"
+
+#include <dirent.h>
 
 typedef struct FSI_DirData_POSIX
 {
@@ -42,6 +48,8 @@ int fsi_readDir(FSI_DirData *d, FSI_EntryData *out);
  * @param d Object to deallocate
  */
 void fsi_closeDir(FSI_DirData *d);
+
+#endif // FSI_OS_WIN32
 
 __FSI_DIRUTILS_POSIX_CPP_CLOSE
 
