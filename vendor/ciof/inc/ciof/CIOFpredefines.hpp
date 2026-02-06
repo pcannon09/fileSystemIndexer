@@ -46,7 +46,7 @@
 #endif // !defined(CIOF_DEV)
 
 // OS Checks
-#ifdef _WIN32
+#if defined(WIN32) || defined(_WIN32)
 #	define CIOF_OS_WIN32
 #   if !defined(WIN32_ANSI_SUPPORT)
 #       define WIN32_ANSI_SUPPORT       1
