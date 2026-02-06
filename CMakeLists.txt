@@ -14,8 +14,8 @@ option(DEV_MODE "Enable development mode" ON)
 set(BUILD_MODE "Development" CACHE STRING "Build mode")
 
 if(NOT DEV_MODE)
-    set(DEV_MODE 1)
-    set(BUILD_MODE "Development")
+    set(DEV_MODE OFF)
+    set(BUILD_MODE "Production")
 endif()
 
 if(DEV_MODE)
@@ -58,11 +58,9 @@ set(DEV_LINK_FLAGS
 # Production mode flags
 set(PROD_COMPILE_FLAGS
     -O3
-    -g
 )
 
 set(PROD_LINK_FLAGS
-    -g
     -O3
     -DNDEBUG
     -DFSI_DEV=false
@@ -95,9 +93,9 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_COLOR_DIAGNOSTICS ON)
 
 # Directory Setup
-set(SRC_DIR "${CMAKE_SOURCE_DIR}/src")
-set(VENDOR_DIR "${CMAKE_SOURCE_DIR}/vendor")
-set(INC_DIR "${CMAKE_SOURCE_DIR}/inc/${projectName}")
+set(SRC_DIR "${CMAKE_CURRENT_SOURCE_DIR}/src")
+set(VENDOR_DIR "${CMAKE_CURRENT_SOURCE_DIR}/vendor")
+set(INC_DIR "${CMAKE_CURRENT_SOURCE_DIR}/inc/${projectName}")
 
 # Source Files
 set(HEADERS
@@ -145,23 +143,24 @@ include_directories(${VENDOR_DIR}/ciof/inc)
 include_directories(${VENDOR_DIR}/cstr/inc)
 include_directories(${VENDOR_DIR}/cvec/inc)
 
-add_executable(${projectName} ${SRC_DIR}/main.cpp ${SOURCES})
+add_executable(${projectName} ${SRC_DIR}/main.cpp)
 
-function(configure_target tgt)
+function(configure_target tgt method)
     target_compile_options(${tgt} PRIVATE ${PROGRAM_COMPILE_FLAGS})
     target_link_options(${tgt} PRIVATE ${PROGRAM_LINK_FLAGS})
     target_include_directories(${tgt} PRIVATE ${INC_DIR})
     target_link_libraries(${tgt} PRIVATE
-    	${projectName}_static
-    	${projectName}_c_static
+    	${projectName}_${method}
+    	${projectName}_c_${method}
 
-    	ciof_static
-    	cstr_static
-    	cvec_static
+    	ciof_${method}
+    	cstr_${method}
+    	cvec_${method}
     )
 endfunction()
 
-configure_target(${projectName})
+configure_target(${projectName} static)
+configure_target(${projectName} shared)
 
 # Output directory
 set_target_properties(
@@ -171,15 +170,27 @@ set_target_properties(
     RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin
 )
 
+function(configInstallTargets method)
+    install(TARGETS
+        ${projectName}_${method}
+        ${projectName}_c_${method}
+        cvec_${method}
+        ciof_${method}
+        cstr_${method}
+
+        EXPORT ${projectName}Target
+        ARCHIVE DESTINATION lib
+        LIBRARY DESTINATION lib
+        RUNTIME DESTINATION bin
+        INCLUDES DESTINATION include
+    )
+endfunction()
+
+configInstallTargets(static)
+configInstallTargets(shared)
+
 # INSTALL / EXPORT CONFIGURATION
 # Install libraries
-install(TARGETS ${projectName}_static ${projectName}_shared
-    EXPORT ${projectName}Target
-    ARCHIVE DESTINATION lib
-    LIBRARY DESTINATION lib
-    RUNTIME DESTINATION bin
-    INCLUDES DESTINATION include
-)
 
 # Install headers
 install(DIRECTORY ${INC_DIR}/ ${SRC_DIR}/
