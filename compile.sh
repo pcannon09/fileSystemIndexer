@@ -9,19 +9,27 @@ set -e
 
 source ./utils/inc/sh/colors.sh
 
-if ! command -v cmake > /dev/null 2>&1; then
-	echo -e "$BRIGHT_RED Please have 'cmake' installed $RESET"
-	exit
+CHECKS=true
+
+if [[ "$1" == "nochecks" ]] || [[ "$2" == "nochecks" ]] || [[ "$3" == "nochecks" ]] ; then
+	CHECKS=false
 fi
 
-if ! command -v ninja > /dev/null 2>&1 || ! command -v make > /dev/null 2>&1; then
-	echo -e "$BRIGHT_RED Please have 'ninja' or 'make' installed $RESET"
-	exit
-fi
+if [[ "$CHECKS" = true ]]; then
+	if ! command -v cmake > /dev/null 2>&1; then
+		echo -e "$BRIGHT_RED Please have 'cmake' installed $RESET"
+		exit
+	fi
 
-if ! command -v jq > /dev/null 2>&1; then
-	echo -e "$BRIGHT_RED Please have 'jq' installed $RESET"
-	exit
+	if ! command -v ninja > /dev/null 2>&1 || ! command -v make > /dev/null 2>&1; then
+		echo -e "$BRIGHT_RED Please have 'ninja' or 'make' installed $RESET"
+		exit
+	fi
+
+	if ! command -v jq > /dev/null 2>&1; then
+		echo -e "$BRIGHT_RED Please have 'jq' installed $RESET"
+		exit
+	fi
 fi
 
 COMPILATION_FILE_PATH=".private/dev/compilation.json"
@@ -80,7 +88,7 @@ if [ "$1" == "setup" ]; then
 	echo -e "${BRIGHT_BLUE}${BOLD}[ * ] Running CMake:\n$cmakeCommand${RESET}"
 	eval "$cmakeCommand"
 
-elif [ -z "$1" ] || [ "$1" == "m" ]; then
+elif [ -z "$1" ] || [ "$1" == "m" ] || [[ "$1" == "nochecks" ]]; then
 	__compileSoftware "$@"
 
 elif [ "$1" == "settings" ]; then
