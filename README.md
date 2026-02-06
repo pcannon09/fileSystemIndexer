@@ -3,6 +3,10 @@
 
 ---
 
+## Support information
+- FSI Currently does not support Windows
+- Currently Linux and macOS* with other POSIX / UNIX systems
+
 ## What is FSI?
 File System Indexer or FSI is a C++ library that it can be used to index files quickly with an extendible and easy to use API
 
