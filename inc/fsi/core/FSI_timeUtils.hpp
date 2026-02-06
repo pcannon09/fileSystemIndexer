@@ -6,7 +6,7 @@
 namespace fs = std::filesystem;
 
 #ifdef  FSI_OS_WIN32
-# 	define __FSI_LOCALTIME(_tt, _tm) 		localtime_s(_tm, _tt)
+# 	define __FSI_LOCALTIME(_tt, _tm) 		localtime_r(_tm, _tt)
 #else
 # 	define __FSI_LOCALTIME(_tt, _tm) 		localtime_r(_tt, _tm)
 #endif // FSI_OS_WIN32
@@ -34,3 +34,4 @@ namespace fsi::utils
 }
 
 #endif  // INCLUDE_CORE_FSI_TIMEUTILS_HPP_
+
