@@ -1,2 +1,2 @@
-$CXX installedTest.cpp  -o installedTest -lfsi_static -lfsi_c_static
+$CXX installedTest.cpp  -o installedTest -lfsi_static -lfsi_c_static -lcvec -lcstr
 
