@@ -57,11 +57,11 @@ set(DEV_LINK_FLAGS
 
 # Production mode flags
 set(PROD_COMPILE_FLAGS
-    -O3
+    -O3 -march=native -fno-plt -flto
 )
 
 set(PROD_LINK_FLAGS
-    -O3
+    -O3 -march=native -fno-plt -flto
     -DNDEBUG
     -DFSI_DEV=false
 )
@@ -128,6 +128,8 @@ set(SOURCES
 	${SRC_DIR}/core/FSI_timeUtils.cpp
 )
 
+set_source_files_properties(${SOURCES_C} PROPERTIES LANGUAGE C)
+
 # Build Targets
 add_library(${projectName}_static STATIC ${SOURCES} ${HEADERS})
 add_library(${projectName}_shared SHARED ${SOURCES} ${HEADERS})
@@ -144,6 +146,8 @@ include_directories(${VENDOR_DIR}/cstr/inc)
 include_directories(${VENDOR_DIR}/cvec/inc)
 
 add_executable(${projectName} ${SRC_DIR}/main.cpp)
+
+add_compile_definitions(_DEFAULT_SOURCE)
 
 function(configure_target tgt method)
     target_compile_options(${tgt} PRIVATE ${PROGRAM_COMPILE_FLAGS})
