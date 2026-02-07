@@ -1,75 +1,41 @@
-#define _DEFAULT_SOURCE
-
 #include "../../../inc/fsi/FSIpredefines.h"
 
 #ifndef FSI_OS_WIN32
 
 #include "../../../inc/fsi/core/interfaces/FSI_dirUtils_posix.h"
 
-#include <dirent.h>
-#include <sys/stat.h>
 #include <stdlib.h>
-#include <fcntl.h>
 
 int fsi_openDir(FSI_DirData *d, const char *path)
 {
-    FSI_DirData_POSIX *p = malloc(sizeof(*p));
+	const int dirFD = open(path, O_RDONLY | O_DIRECTORY | O_CLOEXEC);
 
-    if (!p) return 0;
+	if (dirFD < 0) return 0;
 
-    p->path = cstr_init();
+	DIR *dir = fdopendir(dirFD);
 
-    {
-    	const int dirFD = open(path, O_RDONLY);
+	if (!dir)
+	{
+		close(dirFD);
 
-    	p->dir = fdopendir(dirFD);
-    }
+		return 0;
+	}
 
-    if (!p->dir)
-    {
-        cstr_destroy(&p->path);
+	FSI_DirData_POSIX *p = malloc(sizeof(*p));
 
-        FSI_FREE(p);
+	if (!p)
+	{
+		closedir(dir);
 
-        return 0;
-    }
+		return 0;
+	}
 
-    cstr_set(&p->path, path);
+	p->dir = dir;
+	p->dirfd = dirFD;
 
-    d->impl = p;
+	d->impl = p;
 
-    return 1;
-}
-
-int fsi_readDir(FSI_DirData *d, FSI_EntryData *out)
-{
-    FSI_DirData_POSIX *p = d->impl;
-    struct dirent *e;
-
-    while ((e = readdir(p->dir)))
-    {
-        if (e->d_name[0] == '.' &&
-           (!e->d_name[1] ||
-           (e->d_name[1] == '.' && !e->d_name[2])))
-            continue;
-
-        if (e->d_type == DT_DIR)
-            out->type = FSI_DIR;
-
-        else if (e->d_type == DT_REG)
-            out->type = FSI_FILE;
-
-        else if (e->d_type == DT_LNK)
-            out->type = FSI_SYMLINK;
-
-        else out->type = FSI_OTHER;
-
-        out->name = e->d_name;
-
-        return 1;
-    }
-
-    return 0;
+	return 1;
 }
 
 void fsi_closeDir(FSI_DirData *d)
@@ -78,6 +44,7 @@ void fsi_closeDir(FSI_DirData *d)
 
 	cstr_destroy(&p->path);
 
+	// Closes FD variable too
 	closedir(p->dir);
 
 	FSI_FREE(p);
