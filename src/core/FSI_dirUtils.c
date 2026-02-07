@@ -15,17 +15,6 @@ void fsi_walk(CVEC *out, const char *path)
 
     __fsi_walk(out, &visited, path);
 
-    // for (size_t i = 0; i < visited.size; i++)
-    // {
-    //     printf("%lu\n", i);
-    //
-    //     FSI_Visited_POSIX *visit = cvec_get(&visited, i);
-    //
-    //     if (!visit) continue;
-    //
-    //     FSI_FREE(visit);
-    // }
-
     cvec_destroy(&visited);
 }
 
