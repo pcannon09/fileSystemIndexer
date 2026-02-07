@@ -22,7 +22,7 @@ int main()
 	ciof::print(FSI_temperatureConvertCelTo("f", 33));
 	ciof::print(FSI_temperatureConvertCelFrom("f", 33));
 
-	fsi::Indexer indexer("main-indexer");
+	fsi::Indexer indexer("main-indexer", true);
 
 	{
 		fsi::IndexerInfo info;
