@@ -42,8 +42,8 @@ __FSI_DIRUTILS_PREDEF_CPP_OPEN
 #define FSI_STRINGIFY(x) #x
 #define FSI_TOSTRING(x) FSI_STRINGIFY(x)
 
-#define FSI_FREE(x) free(x); x = NULL;
-#define FSI_DEL(x) delete x; x = nullptr;
+#define FSI_FREE(x) free(x); x = NULL
+#define FSI_DEL(x) delete x; x = nullptr
 
 #ifndef FSI_DEV
 #   define FSI_DEV true
