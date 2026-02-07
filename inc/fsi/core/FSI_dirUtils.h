@@ -13,17 +13,15 @@ __FSI_DIRUTILS_CPP_OPEN
 
 #include "../FSIpredefines.h"
 
-#include <string.h>
-
 #include "cvec/cvec.h"
 
-typedef enum FSI_Type
+typedef enum FSI_EntryType
 {
 	FSI_FILE,
 	FSI_DIR,
 	FSI_SYMLINK,
 	FSI_OTHER
-} FSI_Type;
+} FSI_EntryType;
 
 typedef struct FSI_DirData
 {
@@ -32,9 +30,9 @@ typedef struct FSI_DirData
 
 typedef struct FSI_EntryData
 {
-	const char *name;
+	const char *name; // Valid until next read
 
-	FSI_Type type;
+	FSI_EntryType type;
 } FSI_EntryData;
 
 /**
