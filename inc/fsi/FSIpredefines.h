@@ -23,9 +23,9 @@ __FSI_DIRUTILS_PREDEF_CPP_OPEN
 // Versioning
 #define FSI_VERSION_MAJOR            0
 #define FSI_VERSION_MINOR            1
-#define FSI_VERSION_PATCH            0
+#define FSI_VERSION_PATCH            1
 
-#define FSI_VERSION_STD              20260205
+#define FSI_VERSION_STD              20260207
 
 // Version states:
 // * dev

@@ -2,7 +2,7 @@
 
 DOXYFILE_ENCODING      = UTF-8
 PROJECT_NAME           = "FileSystemIndexer"
-PROJECT_NUMBER         = v0.1.0-beta
+PROJECT_NUMBER         = v0.1.1-beta
 PROJECT_BRIEF          = "File System Indexer - API to index files from your system"
 OUTPUT_DIRECTORY       = docs/
 CREATE_SUBDIRS         = YES
