@@ -23,43 +23,7 @@ namespace fsi
 		return IndexerPathType::File;
 	}
 
-	std::vector<std::string> Indexer::__iteratePath(const std::string &path)
-	{
-    	std::vector<std::string> paths;
-
-    	CVEC tmpPathsVec = cvec_init(-1, sizeof(char*));
-
-    	fsi_walk(&tmpPathsVec, path.c_str());
-
-    	for (size_t i = 0; i < tmpPathsVec.size; ++i)
-    	{
-        	char* p = *(char**)cvec_get(&tmpPathsVec, i);
-
-        	if (p)
-        	{
-        		paths.emplace_back(p);
-
-        		FSI_FREE(p);
-        	}
-    	}
-
-    	cvec_destroy(&tmpPathsVec);
-
-    	return paths;
-	}
-
-
-	// PUBLIC //
-	// CONSTRUCTOR
-	Indexer::Indexer(const std::string &id)
-		: id(id)
-	{ }
-
-	// DECONSTRUCTOR
-	Indexer::~Indexer()
-	{ }
-
-	IndexerError Indexer::addExtendedInfo(const IndexerInfo &info)
+	IndexerError Indexer::__addExtendedInfoStandard(const IndexerInfo &info)
 	{
 		IndexerError error = this->addInfo(info);
 		IndexerInfo totalInfo = info;
@@ -78,6 +42,56 @@ namespace fsi
 		}
 
 		return error;
+	}
+
+	IndexerError Indexer::__addExtendedInfoThreaded(const IndexerInfo &info)
+	{
+		IndexerError error = this->addInfo(info);
+
+		return error;
+	}
+
+	std::vector<std::string> Indexer::__iteratePath(const std::string &path)
+	{
+    	std::vector<std::string> paths;
+
+    	CVEC tmpPathsVec = cvec_init(-1, sizeof(char*));
+
+    	fsi_walk(&tmpPathsVec, path.c_str());
+
+    	for (size_t i = 0; i < tmpPathsVec.size; ++i)
+    	{
+        	char* p = *(char**)cvec_get(&tmpPathsVec, i);
+
+        	if (p)
+        	{
+        		paths.emplace_back(p, strlen(p));
+
+        		FSI_FREE(p);
+        	}
+    	}
+
+    	cvec_destroy(&tmpPathsVec);
+
+    	return paths;
+	}
+
+	// PUBLIC //
+	// CONSTRUCTOR
+	Indexer::Indexer(const std::string &id, const bool threadsImpl)
+		: id(id), threadsImpl(threadsImpl)
+	{ }
+
+	// DECONSTRUCTOR
+	Indexer::~Indexer()
+	{ }
+
+	IndexerError Indexer::addExtendedInfo(const IndexerInfo &info)
+	{
+		if (this->threadsImpl)
+			return this->__addExtendedInfoThreaded(info);
+		
+		return this->__addExtendedInfoStandard(info);
 	}
 
 	std::string Indexer::searchExactMatching(const std::string &find)

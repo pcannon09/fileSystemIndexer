@@ -60,7 +60,10 @@ namespace fsi
 	{
 	private:
 		std::string id;
+
 		std::vector<IndexerInfo> indexerInfo;
+
+		bool threadsImpl;
 
 	protected:
 		/**
@@ -81,8 +84,24 @@ namespace fsi
 		 */
 		virtual std::vector<std::string> __iteratePath(const std::string &path);
 
+		/**
+		 * @brief Standard non-threaded extended information
+		 * 	* This will not add multiple extended information to be processed
+		 * @param info Get the information from the exact path and deeper
+		 * @return IndexerError Return error or success from `IndexerError` type
+		 */
+		IndexerError __addExtendedInfoStandard(const IndexerInfo &info);
+
+		/**
+		 * @brief Threaded extended information
+		 * 	* This will add multiple extended information to be processed in the future
+		 * @param info Get the information from the exact path and deeper
+		 * @return IndexerError Return error or success from `IndexerError` type
+		 */
+		IndexerError __addExtendedInfoThreaded(const IndexerInfo &info);
+
 	public:
-		Indexer(const std::string &id);
+		Indexer(const std::string &id, const bool threadsImpl = false);
 		~Indexer();
 
 		/**
@@ -93,7 +112,8 @@ namespace fsi
 		IndexerError addInfo(const IndexerInfo &info);
 
 		/**
-		 * @brief Add the exact path and the sub-paths to have the info from
+		 * @brief Add the exact path and the sub-paths to have the info from;
+		 * 	* Use `Indexer::__addExtendedInfoStandard()` or `Indexer::__addExtendedInfoThreaded()` if threads are disabled or enabled
 		 * @param info Get the information from the exact path and deeper
 		 * @return IndexerError Return error or success from `IndexerError` type
 		 */
