@@ -3,6 +3,7 @@
 
 #include <string>
 #include <vector>
+#include <thread>
 
 #include "../core/FSI_timeUtils.hpp"
 
@@ -90,7 +91,7 @@ namespace fsi
 		 * @param info Get the information from the exact path and deeper
 		 * @return IndexerError Return error or success from `IndexerError` type
 		 */
-		IndexerError __addExtendedInfoStandard(const IndexerInfo &info);
+		virtual IndexerError __addExtendedInfoStandard(const IndexerInfo &info);
 
 		/**
 		 * @brief Threaded extended information
@@ -98,7 +99,39 @@ namespace fsi
 		 * @param info Get the information from the exact path and deeper
 		 * @return IndexerError Return error or success from `IndexerError` type
 		 */
-		IndexerError __addExtendedInfoThreaded(const IndexerInfo &info);
+		virtual IndexerError __addExtendedInfoThreaded(const IndexerInfo &info);
+
+		/**
+		 * @brief Search all matching path or ID that contains `path`
+		 * @param path Path or ID to search
+		 * @return A vector of all the found `path`s
+		 */
+		virtual std::vector<std::string> __searchMatchingStandard(const std::string &find);
+
+		/**
+		 * @brief Search all matching path or ID that contains `path` using parallelization with multiple CPU threads
+		 * @param path Path or ID to search
+		 * @return A vector of all the found `path`s
+		 */
+		virtual std::vector<std::string> __searchMatchingThreaded(const std::string &find);
+
+		/**
+		 * @brief Split the paths found to be used in the future in different CPU cores
+		 * 	* Split the vector in to tiny vectors depending on how many CPU cores the hardware has
+		 * @param paths The paths to split according to CPU cores
+		 * @return Return the splitted paths
+		 */
+		static std::vector<std::vector<std::string>> __splitPathByCores(const std::vector<std::string> &paths)
+		{
+    		const unsigned int threads = std::max(1u, std::thread::hardware_concurrency());
+
+    		std::vector<std::vector<std::string>> chunks(threads);
+
+    		for (size_t i = 0; i < paths.size(); ++i)
+        		chunks[i % threads].push_back(paths[i]);
+
+    		return chunks;
+		}
 
 	public:
 		Indexer(const std::string &id, const bool threadsImpl = false);
@@ -148,9 +181,10 @@ namespace fsi
 		std::string searchExactMatching(const std::string &find);
 
 		/**
-		 * @brief Search all matching path or ID that contains `path`
-		 * @param path Path or ID to search
-		 * @return A vector of all the found `path`s
+		 * @brief Either use threaded or unthreaded search matching
+		 * 	* Use `Indexer::__searchMatchingThreaded()` or `Indexer::__searchMatchingStandard()`
+		 * @param path Path to read the data to search
+		 * @return All the data found in a vector of strings
 		 */
 		std::vector<std::string> searchMatching(const std::string &path);
 

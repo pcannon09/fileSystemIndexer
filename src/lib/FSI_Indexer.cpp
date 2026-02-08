@@ -1,5 +1,7 @@
 #include <filesystem>
 #include <algorithm>
+#include <future>
+#include <execution>
 
 #include "../../inc/fsi/lib/FSI_Indexer.hpp"
 #include "../../inc/fsi/core/FSI_timeUtils.hpp"
@@ -21,6 +23,47 @@ namespace fsi
 		else if (fs::is_symlink(path)) return IndexerPathType::SymLink;
 
 		return IndexerPathType::File;
+	}
+
+	std::vector<std::string> Indexer::__searchMatchingStandard(const std::string &find)
+	{
+		if (find.empty())
+			return {};
+
+		std::vector<std::string> vec;
+
+		for (const auto &x : this->indexerInfo)
+		{
+			if (x.path.find(find) != std::string::npos)
+				vec.emplace_back(x.path);
+		}
+
+		return vec;
+	}
+
+	std::vector<std::string> Indexer::__searchMatchingThreaded(const std::string& find)
+	{
+    	if (find.empty())
+        	return {};
+
+    	std::vector<std::string> result;
+    	std::mutex mutex;
+
+    	std::for_each(
+        		std::execution::par,
+        		indexerInfo.begin(),
+        		indexerInfo.end(),
+        		[&](const auto& x)
+        	{
+            	if (x.path.find(find) != std::string::npos)
+            	{
+                	std::lock_guard<std::mutex> lock(mutex);
+                	result.emplace_back(x.path);
+            	}
+        	}
+    	);
+
+    	return result;
 	}
 
 	IndexerError Indexer::__addExtendedInfoStandard(const IndexerInfo &info)
@@ -48,32 +91,75 @@ namespace fsi
 	{
 		IndexerError error = this->addInfo(info);
 
+		if (__FSI_INDEXERERR_CHECK(error))
+			return error;
+
+		const auto paths = this->__iteratePath(info.path);
+		const auto &chunks = this->__splitPathByCores(paths);
+
+		std::vector<std::future<std::vector<IndexerInfo>>> tasks;
+
+		for (auto &chunk : chunks)
+		{
+			if (chunk.empty())
+				continue;
+
+			tasks.emplace_back(std::async(std::launch::async,
+						[&, chunk]() -> std::vector<IndexerInfo>
+			{
+				std::vector<IndexerInfo> local;
+
+				local.reserve(chunk.size());
+
+				for (const auto &p : chunk)
+				{
+					IndexerInfo tmp = info;
+					tmp.path = p;
+					tmp.pathType = this->__getPathType(p);
+					local.emplace_back(std::move(tmp));
+				}
+
+				return local;
+			}));
+		}
+
+		// Merging phase
+		for (auto &t : tasks)
+		{
+			auto local = t.get();
+
+			this->indexerInfo.insert(
+					this->indexerInfo.end(),
+					std::make_move_iterator(local.begin()),
+					std::make_move_iterator(local.end()));
+		}
+
 		return error;
 	}
 
 	std::vector<std::string> Indexer::__iteratePath(const std::string &path)
 	{
-    	std::vector<std::string> paths;
+		std::vector<std::string> paths;
 
-    	CVEC tmpPathsVec = cvec_init(-1, sizeof(char*));
+		CVEC tmpPathsVec = cvec_init(-1, sizeof(char*));
 
-    	fsi_walk(&tmpPathsVec, path.c_str());
+		fsi_walk(&tmpPathsVec, path.c_str());
 
-    	for (size_t i = 0; i < tmpPathsVec.size; ++i)
-    	{
-        	char* p = *(char**)cvec_get(&tmpPathsVec, i);
+		for (size_t i = 0; i < tmpPathsVec.size; ++i)
+		{
+			char* p = *(char**)cvec_get(&tmpPathsVec, i);
 
-        	if (p)
-        	{
-        		paths.emplace_back(p, strlen(p));
+			if (p)
+			{
+				paths.emplace_back(p, strlen(p));
 
-        		FSI_FREE(p);
-        	}
-    	}
+				FSI_FREE(p);
+			}
+		}
 
-    	cvec_destroy(&tmpPathsVec);
+		cvec_destroy(&tmpPathsVec);
 
-    	return paths;
+		return paths;
 	}
 
 	// PUBLIC //
@@ -104,18 +190,9 @@ namespace fsi
 
 	std::vector<std::string> Indexer::searchMatching(const std::string &find)
 	{
-		if (find.empty())
-			return {};
+		if (this->threadsImpl) return this->__searchMatchingThreaded(find);
 
-		std::vector<std::string> vec;
-
-		for (const auto &x : this->indexerInfo)
-		{
-			if (x.path.find(find) != std::string::npos)
-				vec.emplace_back(x.path);
-		}
-
-		return vec;
+		return this->__searchMatchingStandard(find);
 	}
 
 	IndexerError Indexer::addInfo(const IndexerInfo &info)
