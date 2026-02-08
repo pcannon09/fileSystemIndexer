@@ -121,11 +121,9 @@ static inline int fsi_visitedHas(CVEC *v, dev_t dev, ino_t ino)
 {
 	for (size_t i = 0 ; i < v->size ; i++)
 	{
-		FSI_Visited_POSIX *e = (FSI_Visited_POSIX*)cvec_get(v, i);
+		FSI_Visited_POSIX e = *(FSI_Visited_POSIX*)cvec_get(v, i);
 		
-		if (!e) continue;
-
-		if (e->dev == dev && e->ino == ino)
+		if (e.dev == dev && e.ino == ino)
 			return 1;
 	}
 
@@ -170,6 +168,7 @@ static inline void __fsi_walk(
     if (fsi_visitedHas(visited, dirSt.st_dev, dirSt.st_ino))
     {
         closedir(dir);
+
         return;
     }
 
