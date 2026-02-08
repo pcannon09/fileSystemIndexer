@@ -26,8 +26,8 @@ To compile this program, you will need the following dependencies
 
 The developer can compile the code with the following snippet
 ```bash
-./gen.sh # Generate all the required files and docs
-./compile.sh settings # Developer will be prompted for config; If doxygen is not installed, it will still work
+./gen.sh # Generate all the required files and docs; If doxygen is not installed, it will still generate the files
+./compile.sh settings # Developer will be prompted for config
 ```
 
 ### Developer Mode
