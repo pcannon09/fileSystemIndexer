@@ -14,14 +14,14 @@ option(DEV_MODE "Enable development mode" ON)
 set(BUILD_MODE "Development" CACHE STRING "Build mode")
 
 if(NOT DEV_MODE)
-    set(DEV_MODE OFF)
-    set(BUILD_MODE "Production")
+	set(DEV_MODE OFF)
+	set(BUILD_MODE "Production")
 endif()
 
 if(DEV_MODE)
-    set(BUILD_MODE "Development" CACHE STRING "Build mode")
+	set(BUILD_MODE "Development" CACHE STRING "Build mode")
 else()
-    set(BUILD_MODE "Production" CACHE STRING "Build mode")
+	set(BUILD_MODE "Production" CACHE STRING "Build mode")
 endif()
 
 # Read metadata
@@ -38,42 +38,44 @@ set(VERSION_STD "${projectVersionSTD}")
 
 project(${projectName} VERSION ${projectVersion} LANGUAGES CXX C)
 
+find_package(TBB REQUIRED)
+
 # Build Configuration
 
 # Development mode flags
 set(DEV_COMPILE_FLAGS
-    -fsanitize=address,leak
-    -g
-    -Wunused
-    -Wall
-    -Wno-range-loop-analysis
+	-fsanitize=address,leak
+	-g
+	-Wunused
+	-Wall
+	-Wno-range-loop-analysis
 )
 
 set(DEV_LINK_FLAGS
-    -fsanitize=address,leak
-    -g
-    -DFSI_DEV=true
+	-fsanitize=address,leak
+	-g
+	-DFSI_DEV=true
 )
 
 # Production mode flags
 set(PROD_COMPILE_FLAGS
-    -O3 -march=native -fno-plt -flto
+	-O3 -march=native -fno-plt -flto
 )
 
 set(PROD_LINK_FLAGS
-    -O3 -march=native -fno-plt -flto
-    -DNDEBUG
-    -DFSI_DEV=false
+	-O3 -march=native -fno-plt -flto
+	-DNDEBUG
+	-DFSI_DEV=false
 )
 
 # Apply flags based on mode
 if(DEV_MODE)
-    message(WARNING "Compiling with DEV_MODE")
-    set(PROGRAM_COMPILE_FLAGS ${DEV_COMPILE_FLAGS})
-    set(PROGRAM_LINK_FLAGS ${DEV_LINK_FLAGS})
+	message(WARNING "Compiling with DEV_MODE")
+	set(PROGRAM_COMPILE_FLAGS ${DEV_COMPILE_FLAGS})
+	set(PROGRAM_LINK_FLAGS ${DEV_LINK_FLAGS})
 else()
-    set(PROGRAM_COMPILE_FLAGS ${PROD_COMPILE_FLAGS})
-    set(PROGRAM_LINK_FLAGS ${PROD_LINK_FLAGS})
+	set(PROGRAM_COMPILE_FLAGS ${PROD_COMPILE_FLAGS})
+	set(PROGRAM_LINK_FLAGS ${PROD_LINK_FLAGS})
 endif()
 
 # Project Configuration
@@ -103,7 +105,7 @@ set(HEADERS
 )
 
 set(HEADERS_C
-    ${INC_DIR}/FSIpredefines.h
+	${INC_DIR}/FSIpredefines.h
 
 	${INC_DIR}/core/FSI_dirUtils.h
 
@@ -150,17 +152,19 @@ add_executable(${projectName} ${SRC_DIR}/main.cpp)
 add_compile_definitions(_DEFAULT_SOURCE)
 
 function(configure_target tgt method)
-    target_compile_options(${tgt} PRIVATE ${PROGRAM_COMPILE_FLAGS})
-    target_link_options(${tgt} PRIVATE ${PROGRAM_LINK_FLAGS})
-    target_include_directories(${tgt} PRIVATE ${INC_DIR})
-    target_link_libraries(${tgt} PRIVATE
-    	${projectName}_${method}
-    	${projectName}_c_${method}
+	target_compile_options(${tgt} PRIVATE ${PROGRAM_COMPILE_FLAGS})
+	target_link_options(${tgt} PRIVATE ${PROGRAM_LINK_FLAGS})
+	target_include_directories(${tgt} PRIVATE ${INC_DIR})
+	target_link_libraries(${tgt} PRIVATE
+		${projectName}_${method}
+		${projectName}_c_${method}
 
-    	ciof_${method}
-    	cstr_${method}
-    	cvec_${method}
-    )
+		ciof_${method}
+		cstr_${method}
+		cvec_${method}
+
+		TBB::tbb
+	)
 endfunction()
 
 configure_target(${projectName} static)
@@ -168,26 +172,26 @@ configure_target(${projectName} shared)
 
 # Output directory
 set_target_properties(
-    ${projectName}
+	${projectName}
 
-    PROPERTIES
-    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin
+	PROPERTIES
+	RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin
 )
 
 function(configInstallTargets method)
-    install(TARGETS
-        ${projectName}_${method}
-        ${projectName}_c_${method}
-        cvec_${method}
-        ciof_${method}
-        cstr_${method}
+	install(TARGETS
+		${projectName}_${method}
+		${projectName}_c_${method}
+		cvec_${method}
+		ciof_${method}
+		cstr_${method}
 
-        EXPORT ${projectName}Target
-        ARCHIVE DESTINATION lib
-        LIBRARY DESTINATION lib
-        RUNTIME DESTINATION bin
-        INCLUDES DESTINATION include
-    )
+		EXPORT ${projectName}Target
+		ARCHIVE DESTINATION lib
+		LIBRARY DESTINATION lib
+		RUNTIME DESTINATION bin
+		INCLUDES DESTINATION include
+	)
 endfunction()
 
 configInstallTargets(static)
@@ -198,49 +202,49 @@ configInstallTargets(shared)
 
 # Install headers
 install(DIRECTORY ${INC_DIR}/ ${SRC_DIR}/
-    DESTINATION include/${projectName}
+	DESTINATION include/${projectName}
 )
 
 install(EXPORT ${projectName}Target
-    FILE ${projectName}Target.cmake
-    NAMESPACE FSI::
-    DESTINATION lib/cmake/${projectName}
+	FILE ${projectName}Target.cmake
+	NAMESPACE FSI::
+	DESTINATION lib/cmake/${projectName}
 )
 
 # Export package
 
 # Generate config file
 configure_package_config_file(
-    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/cmake_package_config.cmake.in"
-    "${CMAKE_CURRENT_BINARY_DIR}/${projectName}Config.cmake"
-    INSTALL_DESTINATION lib/cmake/${projectName}
+	"${CMAKE_CURRENT_SOURCE_DIR}/cmake/cmake_package_config.cmake.in"
+	"${CMAKE_CURRENT_BINARY_DIR}/${projectName}Config.cmake"
+	INSTALL_DESTINATION lib/cmake/${projectName}
 )
 
 # Install package config files
 install(FILES
-    "${CMAKE_CURRENT_BINARY_DIR}/${projectName}Config.cmake"
-    "${CMAKE_CURRENT_BINARY_DIR}/${projectName}ConfigVersion.cmake"
-    DESTINATION lib/cmake/${projectName}
+	"${CMAKE_CURRENT_BINARY_DIR}/${projectName}Config.cmake"
+	"${CMAKE_CURRENT_BINARY_DIR}/${projectName}ConfigVersion.cmake"
+	DESTINATION lib/cmake/${projectName}
 )
 
 # UNINSTALL
 configure_file(
-    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/cmake_uninstall.cmake.in"
-    "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake"
-    @ONLY
+	"${CMAKE_CURRENT_SOURCE_DIR}/cmake/cmake_uninstall.cmake.in"
+	"${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake"
+	@ONLY
 )
 
 add_custom_target(fsi_uninstall
-    COMMAND ${CMAKE_COMMAND} -P
-    	${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake
-    COMMENT "Uninstalling ${projectName} ${VERSION}-${VERSION_STATE}..."
+	COMMAND ${CMAKE_COMMAND} -P
+		${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake
+	COMMENT "Uninstalling ${projectName} ${VERSION}-${VERSION_STATE}..."
 )
 
 # Generate a version file
 write_basic_package_version_file(
-    "${CMAKE_CURRENT_BINARY_DIR}/${projectName}ConfigVersion.cmake"
-    VERSION ${VERSION}
-    COMPATIBILITY AnyNewerVersion
+	"${CMAKE_CURRENT_BINARY_DIR}/${projectName}ConfigVersion.cmake"
+	VERSION ${VERSION}
+	COMPATIBILITY AnyNewerVersion
 )
 
 # PACKAGE CONFIG
@@ -268,6 +272,6 @@ message(STATUS "C Standard: C${C_STD}")
 message(STATUS "Usage:")
 message(STATUS "  Development build: cmake -DDEV_MODE=ON ..")
 message(STATUS "  Production build:  cmake -DDEV_MODE=OFF ..")
-message(STATUS "  Install:           ./compile.sh install {PATH}")
-message(STATUS "  Uninstall:         ./compile.sh uninstall")
+message(STATUS "  Install:		   ./compile.sh install {PATH}")
+message(STATUS "  Uninstall:		 ./compile.sh uninstall")
 
