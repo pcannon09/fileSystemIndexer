@@ -1,5 +1,5 @@
 # File System Indexer
-## Last version of README updated: v0.1.1-beta
+## Last version of README updated: v0.1.2-beta
 
 ---
 
