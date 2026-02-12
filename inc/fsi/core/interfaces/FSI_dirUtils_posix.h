@@ -91,6 +91,15 @@ static inline FSI_EntryType fsi_getEntryType(int dirfd, struct dirent *e)
 	}
 }
 
+/**
+ * @brief Get the entry type of the dirfd from the FSI_DirData_POSIX
+ * * Get if: Directory, File, Symlink or other
+ * * Always using the dirent method; will go faster
+ * @param dirfd The FD directory from the opened database
+ * @param e Dirent entry to get information from the dirent
+ * @param stOut Output Status where the status will be set
+ * @return Return the FSI_EntryType
+ */
 static inline FSI_EntryType fsi_getEntryTypeFromDirent(int dirfd, struct dirent *e, struct stat *stOut)
 {
 	switch (e->d_type)
@@ -117,6 +126,12 @@ static inline FSI_EntryType fsi_getEntryTypeFromDirent(int dirfd, struct dirent 
 	}
 }
 
+/**
+ * @brief Check if `dev` and `ino` are tracked, return the corresponding number of tracked (1) or not (0)
+ * @param dev Device number; in this case for visited directory (or file) to get if tracked
+ * @param ino Serial number to get if tracked
+ * @return Tracked result; 1 if tracked, else, 0
+ */
 static inline int fsi_visitedHas(CVEC *v, dev_t dev, ino_t ino)
 {
 	for (size_t i = 0 ; i < v->size ; i++)
@@ -130,6 +145,12 @@ static inline int fsi_visitedHas(CVEC *v, dev_t dev, ino_t ino)
 	return 0;
 }
 
+/**
+ * @brief Add visited for the dev and ino files; This can be used to check correctly for no recursions
+ * @param v Dynamic vector to allocate the visited data from `FSI_Visited_POSIX` type
+ * @param dev Device number; in this case for visited directory (or file)
+ * @param ino Serial number to track
+ */
 static inline void fsi_visitedAdd(CVEC *v, dev_t dev, ino_t ino)
 {
 	FSI_Visited_POSIX e = {0};
@@ -140,6 +161,12 @@ static inline void fsi_visitedAdd(CVEC *v, dev_t dev, ino_t ino)
 	cvec_push(v, FSI_Visited_POSIX, e);
 }
 
+/**
+ * @brief Internal method helper to walk a directory fast
+ * @param out Output where all the directories (and files) will be added
+ * @param visited Vector track if visited or not
+ * @param path Path to start walking from
+ */
 static inline void __fsi_walk(
     CVEC *out,
     CVEC *visited,
@@ -151,6 +178,7 @@ static inline void __fsi_walk(
     if (fd < 0) return;
 
     DIR *dir = fdopendir(fd);
+
     if (!dir)
     {
     	close(fd);
